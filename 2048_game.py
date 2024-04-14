@@ -123,6 +123,7 @@ class Matrice:
 class GUI:
     nbr_cubes = 4
     speed = 0.2
+    color_mode = "light"
     @staticmethod
     def clean(): fill_rect(0, 0, 320, 222, Screen.palette["Background"])
     class Menu:
@@ -167,21 +168,21 @@ class GUI:
             def draw_speed(v,curs): draw_string("   "+str(round(v, 2))+"   " if not curs else ">  "+str(round(v, 2))+"  <", 200, 80, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             def draw_color_mode(mode,curs): draw_string("    "+mode+"    " if not curs else ">  "+mode+"  <  ", 190, 110, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             def change_color(mode):
-                if mode == "light": Screen.palette["Background"] = (255,255,255) ; Screen.palette["SecondaryText"] = (255,255,255)
-                elif mode == "dark": Screen.palette["Background"] = (120,120,120) ; Screen.palette["SecondaryText"] = (120,120,120)
+                if mode == "light": Screen.palette["Background"] = (255,255,255) ; Screen.palette["PrimaryText"] = (0,255,255) ;Screen.palette["SecondaryText"] = (255,255,255) ; Screen.palette["PrimaryColor"] = (0,0,0)
+                elif mode == "dark": Screen.palette["Background"] = (80,80,100) ; Screen.palette["PrimaryText"] = (255,255,255) ; Screen.palette["SecondaryText"] = (80,80,100) ; Screen.palette["PrimaryColor"] = (255,255,255)
             GUI.clean()
             draw_string("Settings", 110, 30, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             draw_string("speed", 25, 80, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             draw_string("color mode", 25, 110, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
-            curseur, color_mode = "speed", "light"
-            draw_speed(GUI.speed, True) ; draw_color_mode(color_mode, False)
+            curseur  = "speed"
+            draw_speed(GUI.speed, True) ; draw_color_mode(GUI.color_mode, False)
             while True:
                 if curseur == "speed" and keydown(KEY_RIGHT) and round(GUI.speed, 2) != 1: GUI.speed += 0.1 ; draw_speed(GUI.speed, True) ; sleep(0.15)
                 if curseur == "speed" and keydown(KEY_LEFT) and round(GUI.speed, 2) != 0: GUI.speed -= 0.1 ; draw_speed(GUI.speed, True) ; sleep(0.15)
-                if curseur == "color mode" and keydown(KEY_RIGHT): color_mode = "light" if color_mode == "dark" else "dark" ; draw_color_mode(color_mode,True) ; sleep(0.15)
-                if curseur == "color mode" and keydown(KEY_LEFT): color_mode = "light" if color_mode == "dark" else "dark" ; draw_color_mode(color_mode,True) ; sleep(0.15)
-                if keydown(KEY_UP) or keydown(KEY_DOWN): curseur = "color mode" if curseur == "speed" else "speed" ; sleep(0.2) ; draw_speed(GUI.speed, True if curseur == "speed" else False) ; draw_color_mode(color_mode, True if curseur == "color mode" else False)
-                if keydown(KEY_BACKSPACE): change_color(color_mode) ; GUI.clean() ; GUI.Menu.draw() ; break
+                if curseur == "color mode" and keydown(KEY_RIGHT): GUI.color_mode = "light" if GUI.color_mode == "dark" else "dark" ; draw_color_mode(GUI.color_mode,True) ; sleep(0.15)
+                if curseur == "color mode" and keydown(KEY_LEFT): GUI.color_mode = "light" if GUI.color_mode == "dark" else "dark" ; draw_color_mode(GUI.color_mode,True) ; sleep(0.15)
+                if keydown(KEY_UP) or keydown(KEY_DOWN): curseur = "color mode" if curseur == "speed" else "speed" ; sleep(0.2) ; draw_speed(GUI.speed, True if curseur == "speed" else False) ; draw_color_mode(GUI.color_mode, True if curseur == "color mode" else False)
+                if keydown(KEY_BACKSPACE): change_color(GUI.color_mode) ; GUI.clean() ; GUI.Menu.draw() ; break
     @staticmethod
     def main(): GUI.Menu.draw()
 
