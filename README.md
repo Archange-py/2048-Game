@@ -1,15 +1,14 @@
 # 2048 Game
 
 ###
-Welcome ! This project is a simple python version of the 2048 game, for use on the Numworks. In the interest of efficiency, the script has about 200 lines so as not to take up too much space on the calculator.  
+Welcome ! This project is a simple python version of the 2048 game, for use on the Numworks. In the interest of efficiency, the script has about 200 lines so as not to take up too much space on the calculator. The game environment is relatively straightforward and easy to get to grips with right away, with the keystrokes for example.  
 
 > [Link to the original game on gihub](https://github.com/gabrielecirulli/2048) or
 [the game's official website](https://jeu2048.fr/).
 
-Menu Light | Menu Dark
-:---: | :---:
-![menu_light](.\pictures\menu_light.png) | ![menu_light](.\pictures\menu_dark.png)
 
+
+Here's how it looks on the calculator:
 
 <table>
     <thead>
@@ -25,3 +24,41 @@ Menu Light | Menu Dark
         </tr>
     </tbody>
 </table>
+
+<table>
+    <thead>
+        <tr>
+            <th align="center">Game Light</th>
+            <th align="center">Game Dark</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td> <img src=".\pictures\game_light_1.png"> </td>
+            <td> <img src=".\pictures\game_dark_1.png"> </td>
+        </tr>
+    </tbody>
+    <tbody>
+        <tr>
+            <td> <img src=".\pictures\game_light_2.png"> </td>
+            <td> <img src=".\pictures\game_dark_2.png"> </td>
+        </tr>
+    </tbody>
+</table>
+
+<table>
+    <thead>
+        <tr>
+            <th align="center">Settings Light</th>
+            <th align="center">Settings Dark</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td> <img src=".\pictures\settings_light.png"> </td>
+            <td> <img src=".\pictures\settings_dark.png"> </td>
+        </tr>
+    </tbody>
+</table>
+
+> You can change the speed, from 0 to 1 (tiles will scroll faster or slower), and the theme: light or dark.
