@@ -46,6 +46,8 @@ Here's how it looks on the calculator:
     </tbody>
 </table>
 
+> You can change the speed, from 0 to 1 (tiles will scroll faster or slower), and the theme: light or dark.
+
 <table>
     <thead>
         <tr>
@@ -60,5 +62,3 @@ Here's how it looks on the calculator:
         </tr>
     </tbody>
 </table>
-
-> You can change the speed, from 0 to 1 (tiles will scroll faster or slower), and the theme: light or dark.
