@@ -1,7 +1,7 @@
 # 2048 Game
 
 ###
-Welcome ! This project is a simple python version of the 2048 game, for use on the Numworks. In the interest of efficiency, the script has about 200 lines so as not to take up too much space on the calculator. The game environment is relatively straightforward and easy to get to grips with right away, with the keystrokes for example.  
+Welcome ! This project is a simple python version of the 2048 game, for use on the Numworks. In the interest of efficiency, the script has about 200 lines so as not to take up too much space on the calculator. The game environment is relatively straightforward and easy to get to grips, with the keystrokes for example.  
 
 > [Link to the original game on gihub](https://github.com/gabrielecirulli/2048) or
 [the game's official website](https://jeu2048.fr/).
