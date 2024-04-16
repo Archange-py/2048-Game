@@ -6,7 +6,7 @@ Welcome ! This project is a simple version of the 2048 game in python, for use o
 > [Link to the original game on gihub](https://github.com/gabrielecirulli/2048) or
 [the game's official website](https://jeu2048.fr/).
 
-
+You can install it directly on your calculator, by going to [my script](https://my.numworks.com/python/archange/jeux_2048) on the Numworks website.
 
 Here's how it looks on the calculator:
 
