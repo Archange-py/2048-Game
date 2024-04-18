@@ -63,7 +63,7 @@ Here's how it looks on the calculator:
     </tbody>
 </table>
 
-> The Graphics show you your differents score with a graphics plot, and the maximum under
+> The graphical page shows you your different results in the form of a graphics plot, as well as your best score.
 
 <table>
     <thead>
