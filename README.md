@@ -40,8 +40,8 @@ Here's how it looks on the calculator:
     </tbody>
     <tbody>
         <tr>
-            <td align="center"> <img src=".\pictures\game_light_2.png"> </td>
-            <td align="center"> <img src=".\pictures\game_dark_2.png"> </td>
+            <td align="center"> <img src=".\pictures\game_light_2.png" style="width: 960vw; min-width: 720px;> </td>
+            <td align="center"> <img src=".\pictures\game_dark_2.png" style="width: 960vw; min-width: 720px;> </td>
         </tr>
     </tbody>
 </table>
