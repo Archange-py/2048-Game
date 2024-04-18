@@ -2,10 +2,11 @@ from ion import keydown, KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT, KEY_BACKSPACE, K
 from kandinsky import draw_string, fill_rect
 from random import choice, random
 from time import sleep
+
 class Screen: palette = {"Background" : (255, 255, 255), "PrimaryColor" : (0, 0, 0), "PrimaryText" : (0, 200, 200), "SecondaryText" : (255, 255, 255)}
 
 class Cube:
-    style = {2:"grey", 4:"cyan", 8:"blue", 16:"purple", 32:"pink", 64:"magenta", 128:"red", 256:"orange", 512:"yellow", 1024:"green", 2048:"brown"}
+    style = {2: (204, 238, 255), 4: (102.0, 170.0, 178.5), 8: (51.0, 136.0, 140.25), 16: (0, 102, 102), 32: (85.0, 153.0, 68.0), 64: (141.6, 187.0, 45.3), 128: (179.4, 209.6, 30.2), 256: (255, 255, 0), 512: (255, 127.5, 0), 1024: (255, 63.75, 0), 2048: (255, 0, 0)}
     def __init__(self, x, y, nbr=2): self.x, self.y, self.nbr = x, y, nbr
 
     def draw(self, pos_x, pos_y, taille, espace):
@@ -163,6 +164,7 @@ class GUI:
                 if keydown(KEY_OK) and curseur == "graphics": GUI.Graph.draw() ; break
     class Game:
         def __init__(self, N=4): self.matrice = Matrice(N)# ; self.matrice[0][0] = Cube(0,0,2048)
+
         def draw(self, pos_x=100, pos_y=23, taille=48, espace=1):
             def check():
                 if self.matrice.check() == "WIN": draw_string("You Win", 162, 2, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
