@@ -62,3 +62,20 @@ Here's how it looks on the calculator:
         </tr>
     </tbody>
 </table>
+
+> The Graphics show you your differents score with a graphics plot, and the maximum under
+
+<table>
+    <thead>
+        <tr>
+            <th align="center">Graphics Light</th>
+            <th align="center">Graphics Dark</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td> <img src=".\pictures\graphics_light.png"> </td>
+            <td> <img src=".\pictures\graphics_dark.png"> </td>
+        </tr>
+    </tbody>
+</table>
