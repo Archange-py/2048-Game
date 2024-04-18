@@ -204,7 +204,7 @@ class GUI:
                 if keydown(KEY_UP) or keydown(KEY_DOWN): curseur = "color mode" if curseur == "speed" else "speed" ; sleep(0.15) ; draw_speed(GUI.speed, True if curseur == "speed" else False) ; draw_color_mode(GUI.color_mode, True if curseur == "color mode" else False)
                 if keydown(KEY_BACKSPACE): change_color(GUI.color_mode) ; GUI.clean() ; GUI.Menu.draw() ; break
     class Graph:
-        list_score = []
+        list_score = [0]
         @staticmethod
         def draw():
             GUI.clean()
@@ -212,7 +212,7 @@ class GUI:
             draw_string("Maximum Score : "+str(max(GUI.Graph.list_score)), 15, 200, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             fill_rect(10,0,1,222,Screen.palette["PrimaryColor"]);fill_rect(0,196,320,1,Screen.palette["PrimaryColor"])
             for n, bar in enumerate(GUI.Graph.list_score):
-                fill_rect(14+n*(3+2),195,3,round(-bar/50),Screen.palette["PrimaryColor"])
+                fill_rect(10+n*(3+2),195,3,round(-bar/50),Screen.palette["PrimaryColor"])
             while True:
                 if keydown(KEY_BACKSPACE): GUI.Menu.draw() ; break
     @staticmethod
