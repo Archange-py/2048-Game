@@ -141,7 +141,7 @@ class GUI:
                     draw_string(">  start  <", 105, 100, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
                 elif curseur == "settings":
                     draw_string("  start        ", 105, 100, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
-                    draw_string("  graphic        ", 92, 160, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
+                    draw_string("  graphics        ", 92, 160, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
                     draw_string(">  settings  <", 92, 130, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
                 elif curseur == "graphics":
                     draw_string("  start        ", 105, 100, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
@@ -212,7 +212,7 @@ class GUI:
             draw_string("Maximum Score : "+str(max(GUI.Graph.list_score)), 15, 200, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             fill_rect(10,0,1,222,Screen.palette["PrimaryColor"]);fill_rect(0,196,320,1,Screen.palette["PrimaryColor"])
             for n, bar in enumerate(GUI.Graph.list_score):
-                fill_rect(10+n*(3+2),195,3,round(-bar/50),Screen.palette["PrimaryColor"])
+                fill_rect(10+n*(3+2),195,3,round(-bar/103),Screen.palette["PrimaryColor"])
             while True:
                 if keydown(KEY_BACKSPACE): GUI.Menu.draw() ; break
     @staticmethod
