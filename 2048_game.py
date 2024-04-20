@@ -3,10 +3,10 @@ from kandinsky import draw_string, fill_rect
 from random import choice, random
 from time import sleep
 
-class Screen: palette = {"Background" : (255, 255, 255), "PrimaryColor" : (0, 0, 0), "PrimaryText" : (0, 200, 200), "SecondaryText" : (255, 255, 255)}
+class Screen: palette = {"Background" : (255,255,255), "PrimaryColor" : (0,0,0), "PrimaryText" : (0,200,200), "SecondaryText" : (255,255,255)}
 
 class Cube:
-    style = {2: (204, 238, 255), 4: (102.0, 170.0, 178.5), 8: (51.0, 136.0, 140.25), 16: (0, 102, 102), 32: (85.0, 153.0, 68.0), 64: (141.6, 187.0, 45.3), 128: (179.4, 209.6, 30.2), 256: (255, 255, 0), 512: (255, 127.5, 0), 1024: (255, 63.75, 0), 2048: (255, 0, 0)}
+    style = {2:(204,238,255), 4:(102,170,178), 8:(51,136,140), 16:(0,102,102), 32:(85,153,68), 64:(142,187,45), 128:(179,210,30), 256:(255,255,0), 512:(255,127,0), 1024:(255,64,0), 2048:(255,0,0)}
     def __init__(self, x, y, nbr=2): self.x, self.y, self.nbr = x, y, nbr
 
     def draw(self, pos_x, pos_y, taille, espace):
@@ -15,16 +15,9 @@ class Cube:
 
 class Matrice:
     def __init__(self, N=4): self.N, self.score = N, 0 ; self.cubes = [[Cube(x, y, 2 if random() <= 0.85 else 4) for y in range(self.N)] for x in range(self.N)]
-
     def __getitem__(self, ij): return self.cubes[ij]
-
-    def __len__(self): 
-        n = 0
-        for x in range(self.N):
-            for y in range(self.N): n = n + 1 if self[x][y] != None else n + 0
-        return n
-
-    def __iter__(self): iterator = [] ; liste = [[iterator.append(self[x][y]) for y in range(self.N)] for x in range(self.N)] ; del liste ; return iter(iterator)
+    def __len__(self): return self.N * self.N - sum([ligne.count(None) for ligne in self.cubes])
+    def __iter__(self): return (self[x][y] for y in range(self.N) for x in range(self.N))
 
     def getNumberMove(self, cube, ind):
         if ind == "UP":
@@ -94,44 +87,35 @@ class Matrice:
 
     def move_cubes(self, ind):
         if ind == "UP" or ind == "LEFT":
-            for cube in self:
-                if cube != None: self.move_cube(cube, ind)
+            for cube in self: self.move_cube(cube, ind) if cube != None else None
         elif ind == "DOWN" or ind == "RIGHT":
             for x in range(self.N-1, -1, -1):
-                for y in range(self.N-1, -1, -1):
-                    if self[x][y] != None: self.move_cube(self[x][y], ind)
+                for y in range(self.N-1, -1, -1): self.move_cube(self[x][y], ind) if self[x][y] != None else None
 
     def draw_cubes(self, pos_x, pos_y, taille, espace):
         fill_rect(pos_x, pos_y, self.N*(taille+espace)-espace, self.N*(taille+espace)-espace, Screen.palette["Background"])
-        for cube in self:
-            if cube != None: cube.draw(pos_x, pos_y, taille, espace)
+        for cube in self: cube.draw(pos_x, pos_y, taille, espace) if cube != None else None
 
     def getNoneAndReplace(self):
-        if len(self) != self.N*self.N:
-            nones = [] ; liste = [[nones.append(Cube(x,y,2 if random() <= 0.85 else 4)) for y in range(self.N) if self[x][y] is None] for x in range(self.N)]
-            new_cube = choice(nones) ; self[new_cube.x][new_cube.y] = new_cube ; del nones, liste
+        if len(self) != self.N*self.N: new_cube = choice([Cube(x,y,2 if random() <= 0.85 else 4) for y in range(self.N) for x in range(self.N) if self[x][y] is None]) ; self[new_cube.x][new_cube.y] = new_cube
 
     def check(self):
-        n = 0
-        for cube in self:
-            if cube != None:
-                for ind in ["UP", "DOWN", "LEFT", "RIGHT"]:
-                    if self.move_cube(cube, ind, True): n += 1
-        cube_2048 = False
-        for cube in self: 
-            if cube != None:
-                if cube.nbr == 2048: cube_2048 = True
-        if cube_2048: return "WIN"
-        if n / 4 == self.N * self.N: return "LOSE"
+        if 2048 in [cube.nbr for cube in self if cube != None]: return "WIN"
+        elif sum([sum([1 for ind in ["UP", "DOWN", "LEFT", "RIGHT"] if self.move_cube(cube, ind, True)]) for cube in self if cube != None]) / 4 == self.N * self.N: return "LOSE"
+
+class Curseur:
+    def __init__(self, *args, default=""): self.args, self.sens, self.default = args, "R", default
+    def __next__(self): self.N += 1 if self.sens == "R" else -1 ; self.check() ; self.curs = self.args[self.N] ; return self.curs
+    def __iter__(self): self.curs, self.N = self.default, self.args.index(self.default) if self.default != ""  else -1 ; return self
+    def check(self):
+        if self.N > len(self.args)-1: self.N = 0
+        elif self.N < 0: self.N = len(self.args)-1
 
 class GUI:
-    nbr_cubes = 4
-    speed = 0.2
-    color_mode = "light"
+    nbr_cubes, speed, color_mode = 4, 0.2, "light"
     @staticmethod
     def clean(): fill_rect(0, 0, 320, 222, Screen.palette["Background"])
     class Menu:
-        pos = -1
         @staticmethod
         def draw():
             def draw_curseur(curseur):
@@ -147,21 +131,17 @@ class GUI:
                     draw_string("  start        ", 105, 100, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
                     draw_string("  settings        ", 92, 130, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
                     draw_string(">  graphics  <", 92, 160, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
-            def check_nbr(n):
-                if n < 0: GUI.Menu.pos = 2
-                elif n > 2: GUI.Menu.pos = 0
-            GUI.clean()
+            GUI.clean() ; GUI.Menu.C = iter(Curseur("start", "settings", "graphics"))
             draw_string("Game 2048", 105, 50, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             draw_string("  start  ", 105, 100, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             draw_string("  settings  ", 92, 130, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             draw_string("  graphics  ", 92, 160, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
-            list_curseur, curseur = ["start", "settings", "graphics"], "start"
             while True:
-                if keydown(KEY_UP): GUI.Menu.pos -= 1 ; check_nbr(GUI.Menu.pos) ; curseur = list_curseur[GUI.Menu.pos] ; draw_curseur(curseur) ; sleep(0.2)
-                if keydown(KEY_DOWN): GUI.Menu.pos += 1 ; check_nbr(GUI.Menu.pos) ; curseur = list_curseur[GUI.Menu.pos] ; draw_curseur(curseur) ; sleep(0.2)
-                if keydown(KEY_OK) and curseur == "start": game = GUI.Game(GUI.nbr_cubes) ; game.draw() ; break
-                if keydown(KEY_OK) and curseur == "settings": GUI.Setting.draw() ; break
-                if keydown(KEY_OK) and curseur == "graphics": GUI.Graph.draw() ; break
+                if keydown(KEY_UP): GUI.Menu.C.sens = "L" ; next(GUI.Menu.C) ; draw_curseur(GUI.Menu.C.curs) ; sleep(0.15)
+                if keydown(KEY_DOWN): GUI.Menu.C.sens = "R" ; next(GUI.Menu.C) ; draw_curseur(GUI.Menu.C.curs) ; sleep(0.15)
+                if keydown(KEY_OK) and GUI.Menu.C.curs == "start": game = GUI.Game(GUI.nbr_cubes) ; game.draw() ; break
+                if keydown(KEY_OK) and GUI.Menu.C.curs == "settings": GUI.Setting.draw() ; break
+                if keydown(KEY_OK) and GUI.Menu.C.curs == "graphics": GUI.Graph.draw() ; break
     class Game:
         def __init__(self, N=4): self.matrice = Matrice(N)# ; self.matrice[0][0] = Cube(0,0,2048)
 
@@ -185,23 +165,29 @@ class GUI:
     class Setting:
         @staticmethod
         def draw():
-            def draw_speed(v,curs): draw_string("   "+str(round(v, 2))+"   " if not curs else ">  "+str(round(v, 2))+"  <", 200, 80, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
-            def draw_color_mode(mode,curs): draw_string("    "+mode+"    " if not curs else ">  "+mode+"  <  ", 190, 110, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
+            def draw_curseur(curseur):
+                if curseur == "speed":
+                    draw_string(">  "+str(GUI.speed)+"  <    ", 200, 80, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
+                    draw_string("    "+GUI.color_mode+"        ", 180, 110, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
+                elif curseur == "color mode":
+                    draw_string("   "+str(GUI.speed)+"       ", 200, 80, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
+                    draw_string(">   "+GUI.color_mode+"   <    ", 180, 110, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             def change_color(mode):
                 if mode == "light": Screen.palette["Background"] = (255,255,255) ; Screen.palette["PrimaryText"] = (0,200,200) ;Screen.palette["SecondaryText"] = (255,255,255) ; Screen.palette["PrimaryColor"] = (0,0,0)
                 elif mode == "dark": Screen.palette["Background"] = (80,80,100) ; Screen.palette["PrimaryText"] = (255,255,255) ; Screen.palette["SecondaryText"] = (80,80,100) ; Screen.palette["PrimaryColor"] = (255,255,255)
-            GUI.clean()
+            GUI.clean() ; GUI.Setting.C = iter(Curseur("speed", "color mode")) ; GUI.Setting.C_speed = iter(Curseur(0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1, default=GUI.speed)) ; GUI.Setting.C_color_mode = iter(Curseur("light", "dark", default=GUI.color_mode))
             draw_string("Settings", 110, 30, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             draw_string("speed", 25, 80, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             draw_string("color mode", 25, 110, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
-            curseur  = "speed"
-            draw_speed(GUI.speed, True) ; draw_color_mode(GUI.color_mode, False)
+            draw_string("   "+str(GUI.speed)+"       ", 200, 80, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
+            draw_string("    "+GUI.color_mode+"        ", 180, 110, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             while True:
-                if curseur == "speed" and keydown(KEY_RIGHT) and round(GUI.speed, 2) != 1: GUI.speed += 0.1 ; draw_speed(GUI.speed, True) ; sleep(0.15)
-                if curseur == "speed" and keydown(KEY_LEFT) and round(GUI.speed, 2) != 0: GUI.speed -= 0.1 ; draw_speed(GUI.speed, True) ; sleep(0.15)
-                if curseur == "color mode" and keydown(KEY_RIGHT): GUI.color_mode = "light" if GUI.color_mode == "dark" else "dark" ; draw_color_mode(GUI.color_mode,True) ; sleep(0.15)
-                if curseur == "color mode" and keydown(KEY_LEFT): GUI.color_mode = "light" if GUI.color_mode == "dark" else "dark" ; draw_color_mode(GUI.color_mode,True) ; sleep(0.15)
-                if keydown(KEY_UP) or keydown(KEY_DOWN): curseur = "color mode" if curseur == "speed" else "speed" ; sleep(0.15) ; draw_speed(GUI.speed, True if curseur == "speed" else False) ; draw_color_mode(GUI.color_mode, True if curseur == "color mode" else False)
+                if GUI.Setting.C.curs == "speed" and keydown(KEY_RIGHT): GUI.Setting.C_speed.sens = "R" ; next(GUI.Setting.C_speed) ; GUI.speed = GUI.Setting.C_speed.curs ; draw_curseur(GUI.Setting.C.curs) ; sleep(0.15)
+                if GUI.Setting.C.curs == "speed" and keydown(KEY_LEFT): GUI.Setting.C_speed.sens = "L" ; next(GUI.Setting.C_speed) ; GUI.speed = GUI.Setting.C_speed.curs ; draw_curseur(GUI.Setting.C.curs) ; sleep(0.15)
+                if GUI.Setting.C.curs == "color mode" and keydown(KEY_RIGHT): GUI.Setting.C_color_mode.sens = "R" ; next(GUI.Setting.C_color_mode) ; GUI.color_mode = GUI.Setting.C_color_mode.curs ; draw_curseur(GUI.Setting.C.curs) ; sleep(0.15)
+                if GUI.Setting.C.curs == "color mode" and keydown(KEY_LEFT): GUI.Setting.C_color_mode.sens = "L" ; next(GUI.Setting.C_color_mode) ; GUI.color_mode = GUI.Setting.C_color_mode.curs ; draw_curseur(GUI.Setting.C.curs) ; sleep(0.15)
+                if keydown(KEY_UP): GUI.Setting.C.sens = "L" ; next(GUI.Setting.C) ; draw_curseur(GUI.Setting.C.curs) ; sleep(0.15)
+                if keydown(KEY_DOWN): GUI.Setting.C.sens = "R" ; next(GUI.Setting.C) ; draw_curseur(GUI.Setting.C.curs) ; sleep(0.15)
                 if keydown(KEY_BACKSPACE): change_color(GUI.color_mode) ; GUI.clean() ; GUI.Menu.draw() ; break
     class Graph:
         list_score = [0]
@@ -211,8 +197,7 @@ class GUI:
             draw_string("Graphics", 120, 20, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             draw_string("Maximum Score : "+str(max(GUI.Graph.list_score)), 15, 200, Screen.palette["PrimaryText"], Screen.palette["SecondaryText"])
             fill_rect(10,0,1,222,Screen.palette["PrimaryColor"]);fill_rect(0,196,320,1,Screen.palette["PrimaryColor"])
-            for n, bar in enumerate(GUI.Graph.list_score):
-                fill_rect(10+n*(3+2),195,3,round(-bar/103),Screen.palette["PrimaryColor"])
+            for n, bar in enumerate(GUI.Graph.list_score): fill_rect(10+n*(3+2),195,3,round(-bar/103),Screen.palette["PrimaryColor"])
             while True:
                 if keydown(KEY_BACKSPACE): GUI.Menu.draw() ; break
     @staticmethod
